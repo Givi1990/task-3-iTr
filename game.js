@@ -16,7 +16,6 @@ function printAvailableMoves(moves) {
 }
 
 
-// Функция для обработки ввода пользователя
 function handleUserInput(moves, winMap, rl, key) {
     rl.question('Enter your move: ', (input) => {
         if (input === '0') {
@@ -58,7 +57,6 @@ function handleUserInput(moves, winMap, rl, key) {
     });
 }
 
-// Функция для создания карты побед
 function createWinMap(moves) {
     const numMoves = moves.length;
     const winMap = {};
@@ -72,7 +70,6 @@ function createWinMap(moves) {
     return winMap;
 }
 
-// Основная функция
 function main() {
     const args = process.argv.slice(2);
     if (args.length < 3 || args.length % 2 === 0) {
@@ -89,7 +86,7 @@ function main() {
     const moves = args;
     const winMap = createWinMap(moves);
 
-    // Генерация случайного ключа для HMAC
+   
     const key = randomBytes(32).toString('hex').toUpperCase();
     
     console.log(`HMAC: ${generateHMAC(key, moves.join(':'))}`);
