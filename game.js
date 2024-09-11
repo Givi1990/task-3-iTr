@@ -86,7 +86,6 @@ function main() {
     const moves = args;
     const winMap = createWinMap(moves);
 
-    // Генерация случайного ключа для HMAC
     const key = randomBytes(32).toString('hex').toUpperCase();
     
     console.log(`HMAC: ${generateHMAC(key, moves.join(':'))}`);
