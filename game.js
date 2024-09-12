@@ -37,7 +37,6 @@ function handleUserInput(moves, winMap, rl) {
         const computerMoveIndex = Math.floor(Math.random() * moves.length);
         const computerMove = moves[computerMoveIndex];
 
-        // Генерация нового ключа каждый раз при ходе
         const keySize = 32;
         const key = randomBytes(keySize).toString('hex').toUpperCase();
 
