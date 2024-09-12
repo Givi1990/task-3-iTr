@@ -1,7 +1,6 @@
 import { createHmac, randomBytes } from 'crypto';
 import { createInterface } from 'readline';
 
-
 function generateHMAC(key, data) {
     return createHmac('sha256', key).update(data).digest('hex').toUpperCase();
 }
@@ -15,8 +14,7 @@ function printAvailableMoves(moves) {
     console.log("? - help");
 }
 
-
-function handleUserInput(moves, winMap, rl, key) {
+function handleUserInput(moves, winMap, rl) {
     rl.question('Enter your move: ', (input) => {
         if (input === '0') {
             console.log('Exiting...');
@@ -24,20 +22,26 @@ function handleUserInput(moves, winMap, rl, key) {
             return;
         } else if (input === '?') {
             printAvailableMoves(moves);
-            handleUserInput(moves, winMap, rl, key);
+            handleUserInput(moves, winMap, rl);
             return;
         }
 
         const userMoveIndex = parseInt(input, 10) - 1;
         if (userMoveIndex < 0 || userMoveIndex >= moves.length) {
             console.log('Invalid move. Please try again.');
-            handleUserInput(moves, winMap, rl, key);
+            handleUserInput(moves, winMap, rl);
             return;
         }
 
         const userMove = moves[userMoveIndex];
         const computerMoveIndex = Math.floor(Math.random() * moves.length);
         const computerMove = moves[computerMoveIndex];
+
+        // Генерация нового ключа каждый раз при ходе
+        const keySize = 32;
+        const key = randomBytes(keySize).toString('hex').toUpperCase();
+
+        const hmac = generateHMAC(key, computerMove);
 
         console.log(`Your move: ${userMove}`);
         console.log(`Computer move: ${computerMove}`);
@@ -50,10 +54,9 @@ function handleUserInput(moves, winMap, rl, key) {
             console.log('You lose!');
         }
 
-        const hmac = generateHMAC(key, computerMove);
         console.log(`HMAC: ${hmac}`);
         console.log(`HMAC key: ${key}`);
-        handleUserInput(moves, winMap, rl, key);
+        handleUserInput(moves, winMap, rl);
     });
 }
 
@@ -86,9 +89,6 @@ function main() {
     const moves = args;
     const winMap = createWinMap(moves);
 
-    const key = randomBytes(32).toString('hex').toUpperCase();
-    
-    console.log(`HMAC: ${generateHMAC(key, moves.join(':'))}`);
     printAvailableMoves(moves);
 
     const rl = createInterface({
@@ -96,7 +96,7 @@ function main() {
         output: process.stdout
     });
 
-    handleUserInput(moves, winMap, rl, key);
+    handleUserInput(moves, winMap, rl);
 }
 
 main();
